@@ -29,17 +29,24 @@ inquirer
       type: "list",
       message: "What do you want to do?",
       name: "questions",
-      choices: ["veiw all emloyees", "add employee"]
+      choices: ["view all emloyees", "add employee", "view all roles", "add roles", "view all departments", "add department"]
     },
   ])
   .then(function(response) {
-if (response.questions ==="veiw all emloyees" ){
+if (response.questions ==="view all emloyees" ){
     viewAllEmployees()
 } else if (response.questions === "add employee"){
   createEmployee()
+}else if (response.questions === "view all roles"){
+  viewRoles()
+} else if (response.questions === "add roles"){
+  createRole()
+}else if (response.questions === "view all departments"){
+  viewDepartments()
+}else if (response.questions === "add department"){
+  createDepartment()
 }
 
-   
   });
   }
   function viewAllEmployees(){
@@ -111,3 +118,80 @@ function createEmployee(){
     })
   })
 }
+function createRole(){
+  connection.promise().query("SELECT * FROM department").then(([rows])=> {
+    const departmentArray = []
+    rows.forEach(function(department){
+      departmentArray.push({
+        name: department.name,
+        value:department.id
+      })
+    })
+    
+      inquirer.prompt([
+        {
+          name: "title",
+         message: "what is your title?",
+         type: "input"
+        },
+        {
+          name: "salary",
+         message: "what is your salary?",
+         type: "input"
+        },
+        {
+          name: "department_id",
+         message: "what is your department",
+         type: "list",
+         choices: departmentArray
+        },
+        
+      ]).then(answer=> {
+        connection.promise().query("INSERT INTO role SET ?", answer).then(() =>{
+ console.log ("role") 
+ start()
+        })
+      })
+    })
+  
+}
+inquirer.prompt([
+        {
+          name: "title",
+         message: "what is your title?",
+         type: "input"
+        },
+        {
+          name: "salary",
+         message: "what is your salary?",
+         type: "input"
+        },
+        {
+          name: "department_id",
+         message: "what is your department",
+         type: "list",
+         choices: departmentArray
+        },
+        
+      ]).then(answer=> {
+        connection.promise().query("INSERT INTO role SET ?", answer).then(() =>{
+ console.log ("role") 
+ start()
+        })
+      })
+
+     const createDepartment = function(){
+      inquirer.prompt([
+        {
+          name: "name",
+         message: "what is your dpartments name?",
+         type: "input"
+        },
+    
+      ]).then(answer=> {
+        connection.promise().query("INSERT INTO department SET ?", answer).then(() =>{
+ console.log ("department") 
+ start()
+        })
+      })
+     }
